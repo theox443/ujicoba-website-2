@@ -1,0 +1,90 @@
+#!/bin/bash
+set -e
+
+EMAIL="theox443@gmail.com"
+USERNAME="theox443"
+PROJECT_NAME="my_project"
+PYTHON_REQUIREMENTS="requirements.txt"
+GITHUB_SSH_KEY="${HOME}/.ssh/github_${USERNAME}"
+
+# Install dependensi sistem
+echo -e "\n\033[1;32m[1/8] Memasang paket yang diperlukan...\033[0m"
+sudo apt-get update
+sudo apt-get install -y git openssh-client python3 python3-pip golang
+
+# Membuat SSH key khusus untuk GitHub
+echo -e "\n\033[1;32m[2/8] Membuat SSH key untuk GitHub...\033[0m"
+if [ ! -f "${GITHUB_SSH_KEY}" ]; then
+  ssh-keygen -t ed25519 -C "${EMAIL}" -f "${GITHUB_SSH_KEY}" -N ""
+  chmod 600 "${GITHUB_SSH_KEY}"
+fi
+
+# Konfigurasi SSH
+echo -e "\n\033[1;32m[3/8] Mengatur konfigurasi SSH...\033[0m"
+cat >> ~/.ssh/config <<EOF
+
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ${GITHUB_SSH_KEY}
+  IdentitiesOnly yes
+EOF
+
+# Konfigurasi Git global
+echo -e "\n\033[1;32m[4/8] Mengatur konfigurasi Git global...\033[0m"
+git config --global user.name "${theox443}"
+git config --global user.email "${theox443@gmail.com}"
+git config --global core.sshCommand "ssh -i ${GITHUB_SSH_KEY} -F /dev/null"
+
+# Membuat direktori proyek
+echo -e "\n\033[1;32m[5/8] Membuat direktori proyek...\033[0m"
+mkdir -p ${PROJECT_NAME}/{src,scripts,docs}
+cd ${my_projek}
+
+# Inisialisasi repositori Git
+echo -e "\n\033[1;32m[6/8] Inisialisasi repositori Git...\033[0m"
+git init
+git branch -M main
+
+# Membuat file sample Python dan Go
+echo -e "\n\033[1;32m[7/8] Membuat file contoh...\033[0m"
+
+# File requirements Python
+cat > ${PYTHON_REQUIREMENTS} <<EOF
+requests==2.31.0
+numpy==1.24.3
+python-dotenv==1.0.0
+EOF
+
+# File Python contoh
+cat > src/main.py <<EOF
+import requests
+import numpy as np
+
+print("Hello from Python!")
+EOF
+
+# File Go contoh
+cat > src/main.go <<EOF
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("Hello from Go!")
+}
+EOF
+
+# Install dependensi Python
+echo -e "\n\033[1;32m[8/8] Menginstall dependensi Python...\033[0m"
+pip3 install -r ${PYTHON_REQUIREMENTS}
+
+# Setup Go module
+go mod init github.com/${theox443}/${my_projek}
+
+echo -e "\n\033[1;32mSetup selesai! \033[0m"
+echo -e "\033[1;33mSalin SSH public key berikut dan tambahkan ke GitHub:\033[0m"
+cat ${GITHUB_SSH_KEY}.pub
+chmod +x github_setup.sh
+./github_setup.sh
+git remote add origin git@github.com: theox443/repo.git
