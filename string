@@ -1,0 +1,3 @@
+// Modern string operations
+const formatUser = (name, age) => `${name.padEnd(20)} | ${age.toString().padStart(3)}`;
+console.log(formatUser('John Doe', 28));  // "John Doe            |  28"
