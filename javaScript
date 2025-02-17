@@ -1,0 +1,13 @@
+const express = require('express');
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+
+app.get('/set-cookie', (req, res) => {
+    res.cookie('session', 'encrypted_value', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
+    });
+    res.send('Cookie set!');
+});
