@@ -25,7 +25,7 @@ Sebuah proyek full-stack yang menggabungkan Python, Node.js, Go, dan teknologi w
 
 ```bash
 # Clone repositori
-git clone https://github.com/username/reponame.git
+git clone https://github.com/theox443/website-2.git
 cd reponame
 
 # Install dependencies untuk semua bahasa
